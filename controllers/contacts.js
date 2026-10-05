@@ -27,7 +27,8 @@ async function create(req, res) {
   res.status(201).json(contact);
 }
 
-async function update(req, res) {
+async function update(req, res, next) {
+  try {
   const contact = await Contact.findByPk(req.params.id);
 
   if (!contact) {
@@ -35,10 +36,14 @@ async function update(req, res) {
   }
 
   // TODO CHALLENGE 07: actualizar el contacto con los datos recibidos en req.body
-
+  await contact.update(req.body, {
+    fields: ['firstName', 'lastName', 'email', 'phone', 'companyId']
+  });
   res.status(200).json(contact);
+  }catch(error){
+    next(error);
+  }
 }
-
 async function remove(req, res) {
   const deleted = await Contact.destroy({ where: { id: req.params.id } });
 
