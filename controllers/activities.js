@@ -25,14 +25,17 @@ async function getById(req, res) {
   res.status(200).json(activity);
 }
 
-async function create(req, res) {
+async function create(req, res, next) {
+  try {
   // TODO CHALLENGE 06: persistir correctamente el campo metadata (estructura variable segun type)
-  const { type, description, contactId, userId } = req.body;
-  const activity = await Activity.create({ type, description, contactId, userId });
+  const { type, description, contactId, userId, metadata } = req.body;
+  const activity = await Activity.create({ type, description, contactId, userId, metadata});
 
   res.status(201).json(activity);
+  }catch(error){
+    next(error);
+  }
 }
-
 async function update(req, res) {
   // TODO CHALLENGE 08: revisar la operación de actualización
   const activity = await Activity.findByIdAndUpdate(req.params.id, req.body);
